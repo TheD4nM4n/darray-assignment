@@ -98,7 +98,7 @@ int main(int argc, char **argv) {
     darray *array = da_create();
     
     if (array == NULL) {
-        printf("aborted (trump wouldnt like that)");
+        printf("aborted");
         return 1;
     }
 
