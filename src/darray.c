@@ -21,7 +21,7 @@ darray *da_create() {
 
     result->size = 0;
 
-    result->array = (int *)malloc(0 * sizeof(int));
+    result->array = malloc(0 * sizeof(int));
     if (result->array == NULL) {
         free(result);
         return NULL;
@@ -96,6 +96,12 @@ void da_delete(darray *array) {
 
 int main(int argc, char **argv) {
     darray *array = da_create();
+    
+    if (array == NULL) {
+        printf("aborted (trump wouldnt like that)");
+        return 1;
+    }
+
     for (int i=0; i<100; i++) {
         assert(da_append(array, i) == 1);
     }
