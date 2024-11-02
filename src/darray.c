@@ -4,7 +4,7 @@
 #include <stddef.h>
 
 typedef struct {
-    int *array;
+    int *data;
     size_t size;
 } darray;
 
@@ -13,21 +13,23 @@ typedef struct {
  * creation should fail, return NULL.
  */
 darray *da_create() {
-    darray *result = (darray *)malloc(sizeof(darray));
-    if (result == NULL) {
+    darray *array = (darray *)malloc(sizeof(darray));
+    if (array == NULL) {
         printf("[ERROR] Array init failed.");
         return NULL;
     }
 
-    result->size = 0;
+    array->size = 0;
+    printf("%lu", array->size);
+    fflush(stdout);
 
-    result->array = malloc(0 * sizeof(int));
-    if (result->array == NULL) {
-        free(result);
+    array->data = malloc(sizeof(int));
+    if (array->data == NULL) {
+        free(array);
         return NULL;
     }
 
-    return result;
+    return array;
 }
 
 /*
@@ -44,7 +46,7 @@ int *da_get(darray *array, size_t idx) {
         return NULL;
     }
 
-    int *out = array->array[idx];
+    int *out = &array->data[idx];
     return out;
 }
 
@@ -54,20 +56,20 @@ int *da_get(darray *array, size_t idx) {
  * also if the provided array pointer is null.
  */
 int da_append(darray *array, int value) {
-    int newSize = array->size;
-    printf('%d', newSize);
 
-    int *result = (int *)realloc(array->array, ((newSize + 1) * sizeof(int)));
+    size_t newSize = array->size + 1;
+    array->size = newSize;
+
+    int *result = (int *)realloc(array->data, array->size * sizeof(int));
 
     if (result) {
-        array->array = result;
-        array->size++;
+        array->data = result;
     } else {
         printf("[ERROR] Reallocation failed.");
         return 0;
     }
 
-    array->array[array->size] = value;
+    array->data[array->size - 1] = value;
     return 1;
 }
 
@@ -89,30 +91,7 @@ size_t da_size(darray *array) {
  */
 void da_delete(darray *array) {
     if (array) {
-        free(array->array);
+        free(array->data);
         free(array);
     }
-}
-
-int main(int argc, char **argv) {
-    darray *array = da_create();
-    
-    if (array == NULL) {
-        printf("aborted");
-        return 1;
-    }
-
-    for (int i=0; i<100; i++) {
-        assert(da_append(array, i) == 1);
-    }
-
-    assert(da_size(array) == 100);
-
-    for (int i=0; i<100; i++) {
-        assert(*(da_get(array, i)) == i);
-    }
-
-    assert(da_get(array, 101) == NULL);
-
-    da_delete(array);
 }
