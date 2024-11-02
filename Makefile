@@ -1,5 +1,5 @@
-CC = gcc
-CFLAGS = -Wall -Wextra -Iinclude -std=c2x
+CC = gcc-14
+CFLAGS = -Wall -Wextra -Iinclude -std=c23
 
 TARGET = lib/darray.a
 
@@ -22,18 +22,18 @@ clean:
 	rm -rf lib bin build
 
 
-$(TARGET): build build/cpy.o
-	ar rcs $(TARGET) build/cpy.o
+$(TARGET): build build/darray.o
+	ar rcs $(TARGET) build/darray.o
 
 
 .PHONY: tests
 tests: LDLIBS += -lcheck -lsubunit
-tests: test/cpy-tests.c
-	$(CC) $(CFLAGS) $(LDFLAGS) $(LDLIBS) test/cpy-tests.c $(TARGET) -o bin/tests/cpy-tests
+tests: test/darray_test.c
+	$(CC) $(CFLAGS) $(LDFLAGS) $(LDLIBS) test/darray_test.c $(TARGET) -o bin/tests/darray-tests
 
 
-build/cpy.o: src/cpy.c include/cpy.h
-	$(CC) $(CFLAGS) $(LDFLAGS) $(LDLIBS) -c src/cpy.c -o build/cpy.o
+build/darray.o: src/darray.c include/darray.h
+	$(CC) $(CFLAGS) $(LDFLAGS) $(LDLIBS) -c src/darray.c -o build/darray.o
 
 
 	
